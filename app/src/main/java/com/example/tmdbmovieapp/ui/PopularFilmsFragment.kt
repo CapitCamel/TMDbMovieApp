@@ -5,33 +5,29 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.tmdbmovieapp.R
 import com.example.tmdbmovieapp.data.TmdbService
+import com.example.tmdbmovieapp.databinding.FragmentPopularFilmsBinding
 import kotlinx.android.synthetic.main.fragment_popular_films.*
 import kotlinx.coroutines.launch
 
 class PopularFilmsFragment : Fragment() {
 
+    private val viewModel: PopularFilmsViewModel by lazy {
+        ViewModelProvider(this).get(PopularFilmsViewModel::class.java)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        loadData()
-        return inflater.inflate(R.layout.fragment_popular_films, container, false)
+        val binding = FragmentPopularFilmsBinding.inflate(inflater)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+        binding.recyclerView.adapter = PopularMoviesAdapter()
+        return binding.root
     }
 
-    private fun loadData() = viewLifecycleOwner.lifecycleScope.launch {
-        val apiService = TmdbService.buildService()
-
-        try {
-            val movies = apiService.getMovies("a86cd96f8b111284d749bd3d94ca9ca7")
-            recyclerView.adapter = PopularMoviesAdapter(movies = movies.results)
-
-
-        } catch (e: Exception) {
-
-        }
-
-    }
 }

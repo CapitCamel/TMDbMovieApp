@@ -5,33 +5,41 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tmdbmovieapp.R
 import com.example.tmdbmovieapp.data.Result
+import com.example.tmdbmovieapp.databinding.FilmItemBinding
 
-class PopularMoviesAdapter(val movies: List<Result>): RecyclerView.Adapter<MoviesViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.film_item, parent, false)
-        return MoviesViewHolder(view)
+class PopularMoviesAdapter: ListAdapter<Result, MoviesViewHolder>(DiffCallback) {
+
+    companion object DiffCallback : DiffUtil.ItemCallback<Result>() {
+        override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Result, newItem: Result): Boolean {
+            return oldItem.id == newItem.id
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup,
+                                    viewType: Int): MoviesViewHolder {
+        return MoviesViewHolder(FilmItemBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
-        return holder.bind(movies[position])
+        val marsProperty = getItem(position)
+        holder.bind(marsProperty)
     }
-
-    override fun getItemCount(): Int {
-        return movies.size
-    }
-
 }
-class MoviesViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
-    private val photo: ImageView = itemView.findViewById(R.id.movie_photo)
-    private val title: TextView = itemView.findViewById(R.id.movie_title)
 
-    fun bind(movie: Result) = with(itemView) {
-        Glide.with(itemView.context).load("https://image.tmdb.org/t/p/w500${movie.poster_path}").into(photo)
-        title.text = "Title: "+movie.title
-//        rating.text = "Rating : "+movie.vote_average.toString()
+class MoviesViewHolder(private val binding: FilmItemBinding):
+        RecyclerView.ViewHolder(binding.root) {
+    fun bind(movie: Result) {
+        binding.film = movie
+        binding.executePendingBindings()
     }
 }
