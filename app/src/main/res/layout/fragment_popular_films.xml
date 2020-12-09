@@ -15,7 +15,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:listData="@{viewModel.movies.results}"
+            app:listData="@{viewModel.movies}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
             android:id="@+id/recyclerView"

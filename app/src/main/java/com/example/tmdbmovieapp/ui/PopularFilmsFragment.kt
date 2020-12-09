@@ -16,7 +16,8 @@ import kotlinx.coroutines.launch
 class PopularFilmsFragment : Fragment() {
 
     private val viewModel: PopularFilmsViewModel by lazy {
-        ViewModelProvider(this).get(PopularFilmsViewModel::class.java)
+        val activity = requireNotNull(this.activity)
+        ViewModelProvider(this, PopularFilmsViewModel.Factory(activity.application)).get(PopularFilmsViewModel::class.java)
     }
 
     override fun onCreateView(

@@ -1,5 +1,8 @@
 package com.example.tmdbmovieapp.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 data class PopularMovies(
         val results: List<Result>,
         val genres: List<Genre>,
@@ -17,8 +20,11 @@ data class PopularMovies(
 
 )
 
+@Entity
 data class Result(
-        val id: Int,    val overview: String,
+        @PrimaryKey
+        val id: Int,
+        val overview: String,
         val poster_path: String,
         val release_date: String,
         val title: String,
